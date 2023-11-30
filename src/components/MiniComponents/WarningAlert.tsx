@@ -1,13 +1,13 @@
 import React from 'react';
 import {Alert, AlertTitle} from "@mui/material";
 
-const InfoAlert = () => {
+const WarningAlert = () => {
     return (
-        <Alert severity="error" className={'error'}>
-            <AlertTitle>Error</AlertTitle>
-            <strong>Ошибка при загрузке данных</strong>
+        <Alert severity="warning" className={'alert'}>
+            <AlertTitle>Warning</AlertTitle>
+            <strong>Валюты не найдены</strong>
         </Alert>
     );
 };
 
-export default InfoAlert;
+export default WarningAlert;

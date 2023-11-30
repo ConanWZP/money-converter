@@ -1,40 +1,51 @@
-import React, {FC} from 'react';
-import {TableBody, Table, TableCell, TableContainer, TableHead, TableRow, Paper} from "@mui/material";
-import StarIcon from '@mui/icons-material/Star';
+import React, {FC, useMemo} from 'react';
+import {TableBody, Table, TableContainer, Paper} from "@mui/material";
+import RowTable from "./RowTable";
+import TableHeader from "./TableHeader";
+import {CurrentMoneyType} from "../../types/utilsTypes";
+import {MoneyDataModifiedType} from "../../types/axiosTypes";
 
 interface ITableProps {
-    data: any
+    data: MoneyDataModifiedType[],
+    changeFavoriteStatus: (e: string) => void,
+    currentMoney: string
 }
 
-const tableHeadData: string[] = ['Избранное', 'Валюта', 'Единиц', 'Буквенный код', 'Курс']
-const GeneralTable:FC<ITableProps> = ({data}) => {
+const GeneralTable: FC<ITableProps> = ({data, changeFavoriteStatus, currentMoney}) => {
+
+    const currentMoneyData = useMemo((): CurrentMoneyType => {
+        if (!!currentMoney) {
+            const moneyDataElement = data.find((e) => e[0] === currentMoney)
+            if (moneyDataElement) {
+                return {
+                    currentNominal: moneyDataElement[1]['Nominal'],
+                    currentValue: moneyDataElement[1]['Value']
+                } as CurrentMoneyType
+            } else {
+                return {
+                    currentNominal: 1,
+                    currentValue: 1
+                }
+            }
+        } else {
+            return {
+                currentNominal: 1,
+                currentValue: 1
+            }
+        }
+
+    }, [currentMoney, data])
+
     return (
         <TableContainer component={Paper}>
             <Table>
-                <TableHead>
-                    <TableRow sx={{color: 'red'}}>
-                        <TableCell align={'center'} sx={{fontWeight: 600}}>Избранное</TableCell>
-                        <TableCell align={'left'} sx={{fontWeight: 600}}>Валюта</TableCell>
-                        <TableCell align={'right'} sx={{fontWeight: 600}}>Единиц</TableCell>
-                        <TableCell align={'right'} sx={{fontWeight: 600}}>Буквенный код</TableCell>
-                        <TableCell align={'right'} sx={{fontWeight: 600}}>Курс</TableCell>
-                        {/*{
-                            tableHeadData.map((cell: string) => (
-                                <TableCell key={cell} align={'right'} sx={{fontWeight: 600}}>{cell}</TableCell>
-                            ))
-                        }*/}
-                    </TableRow>
-                </TableHead>
+                <TableHeader />
                 <TableBody>
                     {
-                        data?.map((row: any) => (
-                            <TableRow key={row[0]}>
-                                <TableCell align={'center'}><StarIcon/></TableCell>
-                                <TableCell>{row[1]['Name']}</TableCell>
-                                <TableCell align={'right'}>{row[1]['Nominal']}</TableCell>
-                                <TableCell align={'right'}>{row[1]['CharCode']}</TableCell>
-                                <TableCell align={'right'}>1.1545</TableCell>
-                            </TableRow>
+                        data?.map((row) => (
+                            <RowTable key={row[0]} rowData={row[1]}
+                                      changeFavoriteStatus={changeFavoriteStatus} isFav={!!row[2]}
+                                      currentMoneyData={currentMoneyData}/>
                         ))
                     }
                 </TableBody>
