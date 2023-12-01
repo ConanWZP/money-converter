@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useLayoutEffect, useState} from 'react';
+import React, {FC, useLayoutEffect, useState} from 'react';
 import {TableCell, TableRow} from "@mui/material";
 import {Star, StarBorder} from '@mui/icons-material';
 import {CurrentMoneyType} from "../../types/utilsTypes";
@@ -19,7 +19,7 @@ const RowTable: FC<IRowTable> = ({
                                  }) => {
 
     const [isFavorite, setIsFavorite] = useState<boolean>(isFav)
-    const [moneyRate, setMoneyRate] = useState<any>()
+    const [moneyRate, setMoneyRate] = useState<string>('0')
 
     useLayoutEffect(() => {
         if (!!currentMoneyData.currentNominal && !!currentMoneyData.currentValue) {
@@ -28,16 +28,8 @@ const RowTable: FC<IRowTable> = ({
             setMoneyRate((rowData['Value']).toFixed(4))
         }
         // eslint-disable-next-line
-    }, [])
-
-    useEffect(() => {
-        if (!!currentMoneyData.currentNominal && !!currentMoneyData.currentValue) {
-            setMoneyRate(((rowData['Value']) / (currentMoneyData.currentValue) * currentMoneyData.currentNominal).toFixed(4))
-        } else {
-            setMoneyRate((rowData['Value']).toFixed(4))
-        }
-        // eslint-disable-next-line
     }, [currentMoneyData])
+
 
     const changeFavorite = () => {
         setIsFavorite(prevState => !prevState)
